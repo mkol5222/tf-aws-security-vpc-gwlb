@@ -50,6 +50,7 @@ output "spoke_vpc_b_host_ip" {
 module "cpman" {
   depends_on = [module.env]
 
+  cpman_ssh_keypair = "cpman"
   source = "./03-cpman"
 
   inspection_vpc_id = module.env.inspection_vpc_id

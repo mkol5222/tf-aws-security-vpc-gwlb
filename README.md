@@ -1,4 +1,4 @@
-# AWS Security VPC with Chekck Point CloudGuard Netrowk Security using GWLB
+# AWS Security VPC with Check Point CloudGuard Network Security using GWLB
 
 ## Architecture
 

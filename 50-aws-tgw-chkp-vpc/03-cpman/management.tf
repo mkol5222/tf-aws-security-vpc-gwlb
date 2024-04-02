@@ -11,7 +11,7 @@ module "management" {
   // --- EC2 Instances Configuration ---
   management_name = "CP-Management-tf"
   management_instance_type = "m5.xlarge"
-  key_name = "azureshell"
+  key_name = var.cpman_ssh_keypair
   allocate_and_associate_eip = true
   volume_size = 100
   volume_encryption = "alias/aws/ebs"
