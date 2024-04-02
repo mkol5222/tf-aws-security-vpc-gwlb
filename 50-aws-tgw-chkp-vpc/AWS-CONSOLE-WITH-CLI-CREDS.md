@@ -1,4 +1,6 @@
 
+How to use AWS CLI crendetials to access AWS console web UI
+
 ```shell
 
 # https://stackoverflow.com/questions/59952757/how-to-login-to-aws-console-using-access-key-secret-key-and-session-token
@@ -20,7 +22,4 @@ SIGNIN_TOKEN=$(echo $RES | jq -r .SigninToken)
 
 echo "https://signin.aws.amazon.com/federation?Action=login&Destination=https://console.aws.amazon.com/&SigninToken=${SIGNIN_TOKEN}"
 
-```
-
-```shell
 ```

@@ -1,45 +1,55 @@
-# AWS lab with App spokes, TGW and CHKP VPC
-
-Inspired by work at https://github.com/aws-samples/aws-network-firewall-terraform/
-Diagram https://github.com/aws-samples/aws-network-firewall-terraform/blob/main/images/anfw-terraform-sample.jpg
+# AWS lab with App spokes, TGW and CHKP VPC with CloudGuard Network Security behind GWLB
 
 ```shell
 # working folder
 cd /workspaces/tf-playground/50-aws-tgw-chkp-vpc
 
+# alias terraform
+alias tf=terraform
+
+# bring dependencies - providers, modules, ...
 tf init
 
-# bring credentials - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+# bring credentials - e.g. export env vars: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+
+# review the code
 
 # do credentials work?
 tf plan -target module.env
 
-# step by step deployment
+# step by step deployment (to follow what was build in both code and AWS Console)
 
 # network environment
 tf apply -auto-approve -target module.env
 
-tf apply -auto-approve -target module.routes
-
 # workloads in spokes accessible using SSM
+#   used to initiate eggress and E-W traffic
 tf apply -auto-approve -target module.instances
 
 # Check Point Management in Inspection VPC
+#   shared VPC with securure Internet access and E-W inspection
 tf apply -auto-approve -target module.cpman
 
 # Check Point Security Gateways with GWLB in Inspection VPC
+#   deploy CGNS behind GWLB into Security (Inspection) VPC
 tf apply -auto-approve -target module.cgns
 
+# routing setup
+#    route via CGNG thanks to GWLBe
 tf apply -auto-approve -target module.routes
 
-# full deployment - one shot
+# or full deployment - one shot
 tf apply -auto-approve
 
 # CP management console
+#   lets wait in CPMAN EC2 Instance serial console until ot is ready
+
+# IP and creds for CPMAN cli access
 MGMTIP=$(tf output -raw cpman_ip)
 echo ssh admin@$MGMTIP -i C:/Users/mkoldov/.ssh/azureshell.key
 
 # === MANAGEMENT CLI ===
+#   once Check Point Managemeng server is initialized => 
 watch -d api status
 
 # x-chkp-tags	management=CP-Management-gwlb-tf:template=gwlb-configuration:ip-address=private
@@ -88,3 +98,8 @@ TODO:
 - [ ] policy made by Terraform
 - [ ] E-W and Ingress traffic inspection
 - [ ] TF unexpceted replacement - lifecycle / ignore_changes fine tune!
+
+
+References:
+* Inspired by work at https://github.com/aws-samples/aws-network-firewall-terraform/
+    * Diagram https://github.com/aws-samples/aws-network-firewall-terraform/blob/main/images/anfw-terraform-sample.jpg
